@@ -8,19 +8,22 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dialect = process.env.DB_DIALECT || 'sqlite';
-
 let sequelize;
 
-if (dialect === 'sqlite') {
-  const dbPath = process.env.DB_STORAGE || path.join(__dirname, '../fdrflow.sqlite');
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: dbPath,
+if (process.env.DATABASE_URL) {
+  // Render PostgreSQL (free 1-click on Render) or any cloud Postgres
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     logging: false,
   });
-  console.log(`📁 Connected to SQLite database at: ${dbPath}`);
-} else {
+  console.log('🐘 Connected to PostgreSQL database via DATABASE_URL');
+} else if (process.env.DB_DIALECT === 'mysql') {
   sequelize = new Sequelize(
     process.env.DB_NAME || 'fdrflow',
     process.env.DB_USER || 'root',
@@ -39,6 +42,15 @@ if (dialect === 'sqlite') {
     }
   );
   console.log(`🐬 Connected to MySQL database on ${process.env.DB_HOST || 'localhost'}`);
+} else {
+  // Default: SQLite (persisted file)
+  const dbPath = process.env.DB_STORAGE || path.join(__dirname, '../fdrflow.sqlite');
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: dbPath,
+    logging: false,
+  });
+  console.log(`📁 Connected to SQLite database at: ${dbPath}`);
 }
 
 export default sequelize;

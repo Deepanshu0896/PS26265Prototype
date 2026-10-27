@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "cd fdrflow/server && npm install && npm rebuild sqlite3 --build-from-source",
     "postinstall": "cd fdrflow/server && npm install",
-    "build": "cd fdrflow/server && npm install",
     "start": "cd fdrflow/server && node index.js"
   }
 }

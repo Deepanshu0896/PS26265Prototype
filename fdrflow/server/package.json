@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "build": "npm rebuild sqlite3 --build-from-source",
     "dev": "nodemon index.js",
     "seed": "node services/seeder.js"
   },
@@ -19,8 +20,10 @@
     "mysql2": "^3.10.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
+    "pg": "^8.23.1",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
-    "sqlite3": "^6.0.1",
+    "sqlite3": "^5.1.7",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
