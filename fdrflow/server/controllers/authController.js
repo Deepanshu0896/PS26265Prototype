@@ -3,7 +3,11 @@ import jwt from 'jsonwebtoken';
 import { User, Institution, AuditTrail } from '../models/index.js';
 
 const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+  jwt.sign(
+    { id },
+    process.env.JWT_SECRET || 'fdrflow_super_secret_jwt_key_2026',
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+  );
 
 export const login = async (req, res) => {
   try {
@@ -25,13 +29,17 @@ export const login = async (req, res) => {
 
     const token = signToken(user.id);
 
-    // Log login action
-    await AuditTrail.create({
-      fdr_id: null,
-      action: 'USER_LOGIN',
-      performed_by: user.id,
-      notes: `User ${user.email} logged in`,
-    });
+    // Log login action (non-blocking)
+    try {
+      await AuditTrail.create({
+        fdr_id: null,
+        action: 'USER_LOGIN',
+        performed_by: user.id,
+        notes: `User ${user.email} logged in`,
+      });
+    } catch (auditErr) {
+      console.warn('Audit trail note:', auditErr.message);
+    }
 
     res.json({
       success: true,
@@ -46,8 +54,8 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Login error:', err);
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
   }
 };
 
