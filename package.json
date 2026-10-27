@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "postinstall": "cd fdrflow/server && npm install",
     "build": "cd fdrflow/server && npm install",
-    "start": "cd fdrflow/server && npm start",
-    "install:server": "cd fdrflow/server && npm install",
-    "start:server": "cd fdrflow/server && npm start"
+    "start": "cd fdrflow/server && node index.js"
   }
 }
