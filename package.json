@@ -1,0 +1,11 @@
+{
+  "name": "ps26265prototype-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd fdrflow/server && npm install",
+    "start": "cd fdrflow/server && npm start",
+    "install:server": "cd fdrflow/server && npm install",
+    "start:server": "cd fdrflow/server && npm start"
+  }
+}
